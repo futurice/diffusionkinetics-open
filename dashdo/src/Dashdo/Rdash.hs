@@ -55,8 +55,8 @@ rdash rdashdos headExtra = do
         --RD.mkIndexPage (RD.mkHead "Dashdo") (
         pgw
         cdnBootstrapJS
-        script_ [src_ "/js/dashdo.js"] ("" :: Text)
-        script_ [src_ "/js/runners/rdashdo.js"] ("" :: Text)
+        script_ [src_ "js/dashdo.js"] ("" :: Text)
+        script_ [src_ "js/runners/rdashdo.js"] ("" :: Text)
 
 controls :: Monad m => HtmlT m () -> HtmlT m ()
 controls content = do

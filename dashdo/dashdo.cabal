@@ -25,6 +25,7 @@ Library
    Exposed-modules:
                    Dashdo
                  , Dashdo.Serve
+                 , Dashdo.Servant
                  , Dashdo.Types
                  , Dashdo.Elements
                  , Dashdo.Rdash
@@ -35,7 +36,11 @@ Library
    Build-depends:
                  base                    >= 4.6 && <5
                , scotty
+               , servant-server >= 0.11 && <0.12
+               , servant-lucid
                , http-types
+               , containers
+               , http-api-data
                , lucid
                , lucid-extras
                , text
