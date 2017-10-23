@@ -7,6 +7,7 @@ import Dashdo.Types
 import Dashdo.FileEmbed
 
 import Web.Scotty
+import Network.Wai (Application)
 import Network.Wai.Middleware.RequestLogger
 import Network.HTTP.Types (status404)
 import Control.Monad.Trans (liftIO, MonadIO)
@@ -73,11 +74,26 @@ runRDashdoPort prt r html ds = do
   handlers <- mapM (\(RDashdo _ _ d) -> dashdoHandler r d) ds
   serve prt html $ zip3 (map rdFid ds) (map rdTitle ds) handlers
 
+applicationRDashdo :: Monad m => RunInIO m -> Text -> [RDashdo m] -> IO Application
+applicationRDashdo r html ds = do
+  handlers <- mapM (\(RDashdo _ _ d) -> dashdoHandler r d) ds
+  application html $ zip3 (map rdFid ds) (map rdTitle ds) handlers
+
 serve :: Int -> Text -> [(String, T.Text, [Param] -> ActionM ())] -> IO ()
 serve port iniHtml handlers = do
+  s <- scottyDashdo iniHtml handlers
+  scotty port s
+
+application :: Text -> [(String, T.Text, [Param] -> ActionM ())] -> IO Application
+application iniHtml handlers = do
+  s <- scottyDashdo iniHtml handlers
+  scottyApp s
+
+scottyDashdo :: Text -> [(String, T.Text, [Param] -> ActionM ())] -> IO (ScottyM ())
+scottyDashdo iniHtml handlers = do
   uuid <- getRandomUUID
   -- this is obviously incorrect (if the form fields change dynamically)
-  scotty port $ do
+  return $ do
     middleware logStdout
     get "/js/dashdo.js" $ do
       setHeader "Content-Type" "application/javascript"

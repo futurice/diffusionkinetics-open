@@ -55,3 +55,4 @@ Library
                , plotlyhs
                , deepseq
                , safe-exceptions
+               , wai
